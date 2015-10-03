@@ -15,10 +15,8 @@ public class BudgetApp2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //AddIncomeExpenses ai = new AddIncomeExpenses();
-        //ai.setVisible(true);
-        ViewIncomeExpenses vie = new ViewIncomeExpenses();
-        vie.setVisible(true);
+        AddIncomeExpenses ai = new AddIncomeExpenses();
+        ai.setVisible(true);
     }
     
 }
