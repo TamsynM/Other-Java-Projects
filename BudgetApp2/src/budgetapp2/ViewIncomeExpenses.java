@@ -7,7 +7,8 @@ package budgetapp2;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
+import java.sql.*;
+import java.util.ArrayList;
 /**
  *
  * @author TamTam
@@ -19,8 +20,36 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
      */
     public ViewIncomeExpenses() {
         initComponents();
-    }
+        
+        try {
+            //Connection conn = null;
+            Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/Budget", "test", "test");
+            String url = "jdbc:derby://localhost:1527/";  
+            String dbName = "Budget";
+            String driver = "org.apache.derby.jdbc.ClientDriver";
+            String userName = "test";
+            String password = "test";
+            
+            Statement myStmt = conn.createStatement();
+            
+            ResultSet myResult = myStmt.executeQuery("SELECT * FROM INCOME");
 
+            int total = 0;
+            
+            while (myResult.next()) {
+                //sum.add(myResult.getInt("INC_AMOUNT")); 
+                total = total + (myResult.getInt("INC_AMOUNT"));
+            }
+            
+            sumIncomeLbl.setText(Integer.toString(total));
+            
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,6 +69,9 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
         incomeTable = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         expensesTable = new javax.swing.JTable();
+        totalIncomeLbl1 = new javax.swing.JLabel();
+        sumIncomeLbl = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -72,15 +104,31 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(expensesTable);
 
+        totalIncomeLbl1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        totalIncomeLbl1.setText("TOTAL INCOME");
+
+        sumIncomeLbl.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        sumIncomeLbl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel1.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(totalIncomeLbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(sumIncomeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -89,7 +137,12 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 25, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(totalIncomeLbl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sumIncomeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jLabel1))
         );
 
         bindingGroup.bind();
@@ -128,8 +181,15 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ViewIncomeExpenses().setVisible(true);
+                
             }
         });
+        
+    /**
+     *
+     * @return
+     */
+    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -140,8 +200,11 @@ public class ViewIncomeExpenses extends javax.swing.JFrame {
     private java.util.List<budgetapp2.Income> incomeList;
     private javax.persistence.Query incomeQuery;
     private javax.swing.JTable incomeTable;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel sumIncomeLbl;
+    private javax.swing.JLabel totalIncomeLbl1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
